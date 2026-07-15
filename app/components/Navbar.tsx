@@ -235,7 +235,7 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
             <button
               onClick={() => {
                 setMenuOpen(false);
-                onLoginClick();
+                router.push("/login");
               }}
               className="w-full rounded-full px-5 py-2 bg-orange-500 text-white flex gap-2 justify-center shadow-md mt-3"
             >
