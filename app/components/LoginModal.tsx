@@ -24,6 +24,22 @@ export default function LoginModal({
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    const form = e.currentTarget;
+    const identifier = (form.elements[0] as HTMLInputElement)?.value?.trim() || "Buyer";
+    const initial = identifier.charAt(0).toUpperCase() || "B";
+
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(
+        "auth_state",
+        JSON.stringify({
+          isLoggedIn: true,
+          role: "buyer",
+          name: identifier,
+          initial,
+        })
+      );
+    }
+
     onClose();
     router.push(`/quotation?productId=${productId}`);
   }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import logo from "../../public/cnc-logo-orange.png";
 import { Menu, X, User, LogOut, History, UserCircle, Wallet } from "lucide-react";
 import { t } from "@/lib/i18n";
@@ -24,24 +24,41 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
   const [userRole, setUserRole] = useState<"buyer" | "seller" | null>(null);
   const [displayName, setDisplayName] = useState(defaultUser.name);
   const router = useRouter();
+  const pathname = usePathname();
 
-  useEffect(() => {
+  function syncAuthState() {
     if (typeof window === "undefined") return;
 
-    const storedState = window.localStorage.getItem("auth_state");
-    if (!storedState) return;
+    const storedState = window.sessionStorage.getItem("auth_state");
+    if (!storedState) {
+      setIsLoggedIn(false);
+      setUserRole(null);
+      setDisplayName(defaultUser.name);
+      return;
+    }
 
     try {
       const parsed = JSON.parse(storedState);
       if (parsed?.isLoggedIn) {
         setIsLoggedIn(true);
         setUserRole(parsed?.role === "seller" ? "seller" : "buyer");
-        setDisplayName(parsed?.role === "seller" ? "Seller" : "Buyer");
+        setDisplayName(parsed?.name || parsed?.personName || (parsed?.role === "seller" ? "Seller" : "Buyer"));
+      } else {
+        setIsLoggedIn(false);
+        setUserRole(null);
+        setDisplayName(defaultUser.name);
       }
     } catch {
-      window.localStorage.removeItem("auth_state");
+      window.sessionStorage.removeItem("auth_state");
+      setIsLoggedIn(false);
+      setUserRole(null);
+      setDisplayName(defaultUser.name);
     }
-  }, []);
+  }
+
+  useEffect(() => {
+    syncAuthState();
+  }, [pathname]);
 
   function handleLogout() {
     setUserOpen(false);
@@ -49,7 +66,7 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
     setUserRole(null);
     setDisplayName(defaultUser.name);
     if (typeof window !== "undefined") {
-      window.localStorage.removeItem("auth_state");
+      window.sessionStorage.removeItem("auth_state");
     }
     router.push("/login");
   }
