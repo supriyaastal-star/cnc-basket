@@ -15,7 +15,9 @@ export default function FiltersSidebar() {
   const [cityInput, setCityInput] = useState<string>(
     searchParams.get("city") || ""
   );
-
+  const [searchInput, setSearchInput] = useState<string>(
+    searchParams.get("search") || ""
+  );
 
   const [condition, setCondition] = useState<"new" | "old" | "Both">(
     searchParams.get("condition") as "new" | "old" | "Both"
@@ -59,6 +61,7 @@ export default function FiltersSidebar() {
     if (condition) params.set("condition", condition);
     if (stateInput) params.set("state", stateInput);
     if (cityInput) params.set("city", cityInput);
+    if (searchInput) params.set("search", searchInput);
 
     if (withGstChecked) params.set("with_gst", "1");
 
@@ -73,6 +76,7 @@ export default function FiltersSidebar() {
     setSelectedStates([]);
     setSelectedCities([]);
     setWithGstChecked(false);
+    setSearchInput("");
 
     router.push("/search-results");
   }
@@ -91,6 +95,18 @@ export default function FiltersSidebar() {
             {t("clearFilter")}
           </button>
         </div>
+        {/* Search */}
+        <div className="mb-4">
+          <div className="font-medium text-sm mb-1">Search</div>
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="w-full p-2 border rounded text-sm"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </div>
+
         {/* Condition */}
         <div className="mb-4">
           <div className="font-medium text-sm mb-1">{t("condition")}</div>

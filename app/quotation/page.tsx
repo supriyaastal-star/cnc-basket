@@ -2,12 +2,14 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import logo from "../../public/cnc-logo-orange.png";
 import Link from "next/link";
 
 export default function QuotationPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const productId = searchParams.get("productId") || "";
 
   const plans = [
     {
@@ -128,7 +130,7 @@ export default function QuotationPage() {
 
 <button
   onClick={() =>
-    router.push(`/quotation-summary?plan=${plan.title.toLowerCase()}`)
+    router.push(`/quotation-summary?plan=${plan.title.toLowerCase()}${productId ? `&productId=${productId}` : ""}`)
   }
   className={`w-full py-3 rounded-xl font-semibold transition-all cursor-pointer ${plan.buttonColor}`}
 >

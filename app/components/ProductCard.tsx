@@ -98,15 +98,7 @@ export default function ProductCard({
           </span>
         </div>
 
-        <div className="flex flex-col space-y-1 text-sm">
-          {product.gstNumber ? (
-            <span className="text-black-400">
-              {t("gst")}: <span className="font-medium">{product.gstNumber}</span>
-            </span>
-          ) : (
-            <span className="text-gray-400 italic">{t("gst")}: {t("notAvailable")}</span>
-          )}
-        </div>
+      
 
         <div className="flex justify-center pt-2">
           <button

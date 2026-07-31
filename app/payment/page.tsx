@@ -13,6 +13,7 @@ export default function PaymentPage() {
   const router = useRouter();
 
   const plan = searchParams.get("plan") || "Selected Plan";
+  const productId = searchParams.get("productId") || "";
   const numericPrice = parseInt(searchParams.get("price") || "100", 10);
   const amountInPaise = numericPrice * 100;
 
@@ -56,7 +57,8 @@ export default function PaymentPage() {
 
     // Redirect after 1.5 seconds
     setTimeout(() => {
-      router.push("/product-details");
+      const detailsPath = productId ? `/product-details/${productId}` : "/product-details";
+      router.push(detailsPath);
     }, 1500);
   },
   modal: {

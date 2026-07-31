@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Package, PlusCircle, TrendingUp } from "lucide-react";
+import RoleSelectionModal from "../components/RoleSelectionModal";
 
 const sellerSteps = [
   {
@@ -23,6 +25,7 @@ const sellerSteps = [
 
 export default function SellerPage() {
   const router = useRouter();
+  const [roleModalOpen, setRoleModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-orange-50 px-4 py-12 flex items-center justify-center">
@@ -73,6 +76,7 @@ export default function SellerPage() {
             </div>
             <button
               type="button"
+              onClick={() => setRoleModalOpen(true)}
               className="rounded-full bg-orange-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-orange-600"
             >
               Start selling
@@ -80,6 +84,13 @@ export default function SellerPage() {
           </div>
         </div>
       </div>
+
+      <RoleSelectionModal
+        open={roleModalOpen}
+        onClose={() => setRoleModalOpen(false)}
+        initialView="seller-auth"
+        defaultRole="seller"
+      />
     </div>
   );
 }

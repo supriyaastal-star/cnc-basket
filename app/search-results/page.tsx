@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import ProductCard from "../components/ProductCard";
-import LoginModal from "../components/LoginModal";
-import RegistrationModal from "../components/RegistrationModal";
+import RoleSelectionModal from "../components/RoleSelectionModal";
 import FiltersSidebar from "../components/filters/FiltersSidebar";
 import { useSearchParams, useRouter } from "next/navigation";
 import logo from "../../public/cnc-logo-white.png";
@@ -72,8 +71,7 @@ export default function SearchResultsPage() {
   const cities = searchParams.get("city")?.split(",") ?? [];
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [registerOpen, setRegisterOpen] = useState(false);
+  const [roleSelectionOpen, setRoleSelectionOpen] = useState(false);
 
   const filteredProducts = SAMPLE.filter((p) => {
     if (category && p.category !== category) return false;
@@ -91,15 +89,18 @@ export default function SearchResultsPage() {
 
   function onGetDetails(p: Product) {
     setSelectedProduct(p);
-    setLoginOpen(true);
-  }
 
-  function afterLoginOrRegister() {
-    setLoginOpen(false);
-    setRegisterOpen(false);
-    if (selectedProduct) {
-      router.push(`/product-details/${selectedProduct.id}`);
+    if (typeof window !== "undefined") {
+      const authState = window.sessionStorage.getItem("auth_state");
+      const parsedAuth = authState ? JSON.parse(authState) : null;
+
+      if (parsedAuth?.isLoggedIn) {
+        router.push(`/quotation?productId=${p.id}`);
+        return;
+      }
     }
+
+    setRoleSelectionOpen(true);
   }
 
 return (
@@ -175,23 +176,12 @@ return (
       </div>
     </section>
 
-    {/* ================= MODALS ================= */}
-    <LoginModal
-      open={loginOpen}
-      onClose={() => setLoginOpen(false)}
-      onCreateAccount={() => {
-        setLoginOpen(false);
-        setRegisterOpen(true);
-      }}
+    <RoleSelectionModal
+      open={roleSelectionOpen}
+      onClose={() => setRoleSelectionOpen(false)}
       productId={selectedProduct?.id}
     />
 
-    <RegistrationModal
-      open={registerOpen}
-      onClose={() => setRegisterOpen(false)}
-      onSuccess={afterLoginOrRegister}
-      productId={selectedProduct?.id ?? null}
-    />
   </main>
 );
 }

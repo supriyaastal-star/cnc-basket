@@ -13,6 +13,7 @@ export default function QuotationSummaryPage() {
 
   // Selected plan key from URL
   const selectedPlanKey = searchParams.get("plan") || "";
+  const productId = searchParams.get("productId") || "";
   const plan = PLAN_DETAILS[selectedPlanKey];
 
   const [customer, setCustomer] = useState({
@@ -31,7 +32,7 @@ export default function QuotationSummaryPage() {
 
   const handleSubmit = () => {
     router.push(
-      `/payment?plan=${selectedPlanKey}&name=${encodeURIComponent(customer.name)}`
+      `/payment?plan=${selectedPlanKey}&name=${encodeURIComponent(customer.name)}${productId ? `&productId=${productId}` : ""}`
     );
   };
 
